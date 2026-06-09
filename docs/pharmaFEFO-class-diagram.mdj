@@ -804,7 +804,7 @@
 											"top": 432,
 											"width": 152.24560546875,
 											"height": 13,
-											"text": "-createdAt",
+											"text": "-createdAt: DateTime",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2039,7 +2039,7 @@
 											"top": 242,
 											"width": 127.32470703125,
 											"height": 13,
-											"text": "-batch: Batch",
+											"text": "-stockBatch: Batch",
 											"horizontalAlignment": 0
 										}
 									],
@@ -3640,7 +3640,8 @@
 								"$ref": "AAAAAAGep74a9TR/i9g="
 							},
 							"name": "createdAt",
-							"visibility": "private"
+							"visibility": "private",
+							"type": "DateTime"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -3911,7 +3912,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGep/wwoYQnxzI="
 							},
-							"name": "batch",
+							"name": "stockBatch",
 							"visibility": "private",
 							"type": "Batch"
 						}
