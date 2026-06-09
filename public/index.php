@@ -12,13 +12,11 @@ use PharmaFEFO\Controller\StockController;
 use PharmaFEFO\Controller\ReportController;
 use PharmaFEFO\Middleware\AuthMiddleware;
 use PharmaFEFO\Middleware\RoleMiddleware;
-use PharmaFEFO\Middleware\GuestMiddleware;
 
 $route = $_GET['route'] ?? 'login';
 
 switch ($route) {
     case 'login':
-        GuestMiddleware::requireGuest();
         $controller = new AuthController();
         $controller->login();
         break;

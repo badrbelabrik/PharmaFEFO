@@ -2,6 +2,6 @@
 
 namespace Controller;
 
-class StockController{
+class ReportController{
 
 }
