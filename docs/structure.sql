@@ -28,7 +28,7 @@ CREATE TABLE stockbatches(
     lot_number VARCHAR(100) NOT NULL,
     quantity INT NOT NULL,
     purchase_price FLOAT NOT NULL,
-    status ENUM('ok','warning','critical','expired') DEFAULT 'ok',
+    status ENUM('ok','warning','critical','expired','return_process') DEFAULT 'active',
     expiration_date DATE NOT NULL,
     created_at DATETIME NOT NULL,
     id_product INT NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE notifications(
 );
 CREATE TABLE stockmovements(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    type ENUM('enter','exit'),
+    type ENUM('in','out'),
     quantity INT NOT NULL,
     movement_date DATETIME NOT NULL,
     id_batch INT,
