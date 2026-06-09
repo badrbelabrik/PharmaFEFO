@@ -4,3 +4,4 @@
 # IDE (JetBrains / PHPStorm / IntelliJ)
 .idea/
 .vscode/
+seed.php
