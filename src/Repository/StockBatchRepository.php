@@ -532,12 +532,15 @@ class StockBatchRepository
         }
 
         $batch = new StockBatch(
-            $product,
+
             $data['lot_number'],
-            new DateTime($data['expiration_date']),
             (int)$data['quantity'],
             (float)$data['purchase_price'],
-            BatchStatus::from($data['status'])
+            BatchStatus::from($data['status']),$product,
+            new DateTime($data['expiration_date']),
+            $data['created_at'],
+            $product,
+            $data['id']
         );
         $batch->setId((int)$data['id']);
 

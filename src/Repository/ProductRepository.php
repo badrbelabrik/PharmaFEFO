@@ -100,7 +100,7 @@ class ProductRepository
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([
             ':name' => $product->getName(),
-            ':serial_number' => $product->getCode(),
+            ':serial_number' => $product->getSerialNumber(),
             ':description' => $product->getDescription()
         ]);
 
@@ -119,7 +119,7 @@ class ProductRepository
         $stmt = $this->connection->prepare($sql);
         return $stmt->execute([
             ':name' => $product->getName(),
-            ':serial_number' => $product->getCode(),
+            ':serial_number' => $product->getSerialNumber(),
             ':description' => $product->getDescription(),
             ':id' => $product->getId()
         ]);
@@ -150,13 +150,10 @@ class ProductRepository
     private function hydrate(array $data): Product {
         $product = new Product(
             $data['serial_number'],  // code/serial_number
-            $data['name'],
-            0.00,  // Default price (you may want to add this to your products table)
+            $data['name'], // Default price (you may want to add this to your products table)
             $data['description'] ?? null,
-            10,    // Default min stock threshold
-            90     // Default warning days threshold
+            $data['id']
         );
-        $product->setId((int)$data['id']);
 
         return $product;
     }
