@@ -1,7 +1,7 @@
 <?php
 
 namespace PharmaFEFO\Repository;
-class ProductRepository
+class StockBatchRepository
 {
 
 }

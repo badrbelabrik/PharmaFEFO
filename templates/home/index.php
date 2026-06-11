@@ -15,7 +15,7 @@
             <span class="text-xl font-bold tracking-tight text-slate-900">PharmaFEFO</span>
         </div>
         <div>
-            <a href="../auth/login.php"
+            <a href="index.php?route=login"
                class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all cursor-pointer">
                 Sign In
             </a>
@@ -38,7 +38,7 @@
                 PharmaFEFO automates inventory priority by enforcing strict expiration queues. Prevent financial losses, eliminate human error during dispensing, and anticipate shortages months in advance.
             </p>
             <div class="mt-8 flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-                <a href="../auth/login.php"
+                <a href="index.php?route=login"
                    class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-xl shadow-md text-white bg-emerald-600 hover:bg-emerald-700 transition-all cursor-pointer">
                     Access Dispensary System
                 </a>

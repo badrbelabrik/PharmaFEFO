@@ -1,11 +1,11 @@
 <?php
-namespace Repository;
-use Config\Database;
-use Entity\User;
+namespace PharmaFEFO\Repository;
 use PDO;
 use PDOException;
+use PharmaFEFO\config\Database;
+use PharmaFEFO\Entity\User;
 
-class userRepository
+class UserRepository
 {
     private PDO $pdo;
     public function __construct(){
@@ -17,7 +17,7 @@ class userRepository
             $sql = "SELECT * FROM users WHERE email = ?";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([$email]);
-            $user = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
             if(!$user){
                 return null;
             }

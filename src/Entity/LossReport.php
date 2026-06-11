@@ -1,6 +1,6 @@
 <?php
 
-namespace Entity;
+namespace PharmaFEFO\Entity;
 
 class LossReport
 {

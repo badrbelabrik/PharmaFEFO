@@ -8,14 +8,19 @@ require_once __DIR__ . '/../config/autoloader.php';
 
 use PharmaFEFO\Controller\AuthController;
 use PharmaFEFO\Controller\DashboardController;
+use PharmaFEFO\Controller\HomeController;
 use PharmaFEFO\Controller\StockController;
 use PharmaFEFO\Controller\ReportController;
 use PharmaFEFO\Middleware\AuthMiddleware;
 use PharmaFEFO\Middleware\RoleMiddleware;
 
-$route = $_GET['route'] ?? 'login';
+$route = $_GET['route'] ?? 'home';
 
 switch ($route) {
+    case 'home':
+        $controller = new HomeController();
+        $controller->index();
+        break;
     case 'login':
         $controller = new AuthController();
         $controller->login();
