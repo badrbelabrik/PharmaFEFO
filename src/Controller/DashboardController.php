@@ -47,7 +47,7 @@ class DashboardController
         $userRole = $_SESSION['user_role'] ?? 'preparator';
 
 
-        require_once __DIR__ . '/../../templates/dashboard/index.php';
+        require_once __DIR__ . '/../../templates/dashboard/dashboard.php';
     }
 
     private function calculateTotalStockValue(array $batches): float {
