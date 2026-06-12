@@ -40,24 +40,20 @@ class StockController
     private function handleReceivePost(): void {
         $errors = [];
 
-        // Get and validate form data
         $productId = (int)($_POST['product_id'] ?? 0);
         $lotNumber = trim($_POST['lot_number'] ?? '');
         $expirationDateString = $_POST['expiration_date'] ?? '';
         $quantity = (int)($_POST['quantity'] ?? 0);
         $purchasePrice = (float)($_POST['purchase_price'] ?? 0);
 
-        // Validate product
         if ($productId <= 0) {
             $errors[] = "Please select a valid medication.";
         }
 
-        // Validate lot number
         if (empty($lotNumber)) {
             $errors[] = "Lot number is required.";
         }
 
-        // Validate expiration date
         if (empty($expirationDateString)) {
             $errors[] = "Expiration date is required.";
         } else {
@@ -70,17 +66,14 @@ class StockController
             }
         }
 
-        // Validate quantity
         if ($quantity <= 0) {
             $errors[] = "Quantity must be greater than 0.";
         }
 
-        // Validate purchase price
         if ($purchasePrice < 0) {
             $errors[] = "Purchase price cannot be negative.";
         }
 
-        // If no errors, save the batch
         if (empty($errors)) {
             try {
                 $product = $this->productRepo->findById($productId);
@@ -101,7 +94,6 @@ class StockController
                     $savedBatch = $this->stockBatchRepo->save($batch);
 
                     if ($savedBatch) {
-                        // Create notification if needed
                         $daysUntilExpiry = StockBatchService::getDaysUntilExpiration($batch);
                         if ($daysUntilExpiry <= 90) {
                             $this->stockBatchRepo->createNotification(
@@ -125,7 +117,6 @@ class StockController
             }
         }
 
-        // If we get here, there were errors
         $products = $this->productRepo->findAll();
         $currentUser = $_SESSION['user_firstname'] . ' ' . ($_SESSION['user_lastname'] ?? '');
         $userRole = $_SESSION['user_role'] ?? 'preparator';
@@ -134,7 +125,6 @@ class StockController
     }
 
     public function dispatch(): void {
-        // Will be implemented later
         echo "Dispatch method - FEFO dispensing coming soon";
     }
 

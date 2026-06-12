@@ -150,10 +150,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Find a batch by its ID
-     * Used by StockController
-     */
     public function findById(int $id): ?StockBatch {
         try {
             $sql = "SELECT sb.*, p.name as product_name, p.serial_number 
@@ -173,10 +169,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Find all batches for a specific product
-     * Used for product detail views
-     */
     public function findByProductId(int $productId): array {
         try {
             $sql = "SELECT sb.*, p.name as product_name, p.serial_number 
@@ -231,10 +223,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Update batch quantity
-     * Used by StockController when dispensing
-     */
     public function updateQuantity(StockBatch $batch): bool {
         try {
             // Calculate days until expiration using service
@@ -267,10 +255,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Mark a batch as expired
-     * Used by StockController
-     */
     public function markAsExpired(StockBatch $batch): bool {
         try {
             $batch->setStatus(BatchStatus::EXPIRED);
@@ -297,9 +281,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Record stock movement in stockmovements table
-     */
     private function recordStockMovement(int $batchId, string $type, int $quantity, string $notes = ''): bool {
         try {
             $sql = "INSERT INTO stockmovements (type, quantity, movement_date, id_batch, id_user)
@@ -321,10 +302,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Dispense medication (decrement quantity and record movement)
-     * Used by StockController for FEFO dispensing
-     */
     public function dispense(StockBatch $batch, int $quantity): bool {
         try {
             $oldQuantity = $batch->getQuantity();
@@ -346,10 +323,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Delete a batch (soft delete or hard delete)
-     * Used for admin operations
-     */
     public function delete(int $id): bool {
         try {
             $sql = "DELETE FROM stockbatches WHERE id = :id";
@@ -361,10 +334,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Get total value of expired stock for financial report
-     * Used by ReportController
-     */
     public function getExpiredStockValue(DateTime $startDate, DateTime $endDate): float {
         try {
             $sql = "SELECT SUM(quantity * purchase_price) as total_value
@@ -386,10 +355,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Get total value of all stock (active batches)
-     * Used by DashboardController
-     */
     public function getTotalStockValue(): float {
         try {
             $sql = "SELECT SUM(quantity * purchase_price) as total_value
@@ -404,11 +369,6 @@ class StockBatchRepository
             return 0.0;
         }
     }
-
-    /**
-     * Get total number of active batches
-     * Used by DashboardController
-     */
     public function getTotalActiveBatches(): int {
         try {
             $sql = "SELECT COUNT(*) as total
@@ -424,10 +384,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Get low stock alerts (quantity below threshold)
-     * Used for additional alerts
-     */
     public function findLowStockBatches(int $threshold = 10): array {
         try {
             $sql = "SELECT sb.*, p.name as product_name, p.serial_number 
@@ -453,10 +409,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Get summary statistics for dashboard
-     * Used by DashboardController
-     */
     public function getDashboardStats(): array {
         try {
             $sql = "SELECT 
@@ -492,10 +444,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Search batches by product name or lot number
-     * Used for search functionality
-     */
     public function search(string $keyword): array {
         try {
             $sql = "SELECT sb.*, p.name as product_name, p.serial_number 
@@ -523,10 +471,7 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Get batches that will expire in the next month
-     * Used for notifications (US 2.2)
-     */
+
     public function getExpiringNextMonth(): array {
         try {
             $sql = "SELECT sb.*, p.name as product_name, p.serial_number 
@@ -552,10 +497,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Get expired batches
-     * Used for financial reports
-     */
     public function getExpiredBatches(): array {
         try {
             $sql = "SELECT sb.*, p.name as product_name, p.serial_number 
@@ -579,10 +520,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Get stock movements for a batch
-     * Used for audit trail
-     */
     public function getStockMovements(int $batchId): array {
         try {
             $sql = "SELECT * FROM stockmovements 
@@ -598,10 +535,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Create notification for expiring batch
-     * Used by alert system
-     */
     public function createNotification(int $batchId, string $description): bool {
         try {
             $sql = "INSERT INTO notifications (description, created_at, is_read, id_batch)
@@ -619,10 +552,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Get unread notifications
-     * Used by dashboard
-     */
     public function getUnreadNotifications(): array {
         try {
             $sql = "SELECT n.*, sb.lot_number, p.name as product_name
@@ -640,9 +569,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Mark notification as read
-     */
     public function markNotificationAsRead(int $notificationId): bool {
         try {
             $sql = "UPDATE notifications SET is_read = 1 WHERE id = :id";
@@ -654,9 +580,6 @@ class StockBatchRepository
         }
     }
 
-    /**
-     * Hydrate database data into StockBatch entity
-     */
     private function hydrate(array $data): StockBatch {
         try {
             $product = $this->productRepository->findById($data['id_product']);

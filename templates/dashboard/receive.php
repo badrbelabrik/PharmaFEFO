@@ -1,7 +1,4 @@
 <?php
-declare(strict_types=1);
-
-// Default values if not set by controller
 $currentUser = $currentUser ?? 'User';
 $userRole = $userRole ?? 'preparator';
 ?>

@@ -15,9 +15,6 @@ class ProductRepository
         $this->connection = Database::getConnection();
     }
 
-    /**
-     * Find a product by its ID
-     */
     public function findById(int $id): ?Product {
         try {
             $sql = "SELECT * FROM products WHERE id = :id";
@@ -35,9 +32,6 @@ class ProductRepository
         }
     }
 
-    /**
-     * Find a product by its serial number
-     */
     public function findBySerialNumber(string $serialNumber): ?Product {
         try {
             $sql = "SELECT * FROM products WHERE serial_number = :serial_number";
@@ -55,9 +49,6 @@ class ProductRepository
         }
     }
 
-    /**
-     * Find a product by its name
-     */
     public function findByName(string $name): ?Product {
         try {
             $sql = "SELECT * FROM products WHERE name = :name";
@@ -75,10 +66,6 @@ class ProductRepository
         }
     }
 
-    /**
-     * Get all products
-     * Used by DashboardController
-     */
     public function findAll(): array {
         try {
             $sql = "SELECT * FROM products ORDER BY name ASC";
@@ -96,9 +83,6 @@ class ProductRepository
         }
     }
 
-    /**
-     * Search products by name or serial number
-     */
     public function search(string $keyword): array {
         try {
             $sql = "SELECT * FROM products 
@@ -122,9 +106,6 @@ class ProductRepository
         }
     }
 
-    /**
-     * Save a new product
-     */
     public function save(Product $product): ?Product {
         try {
             $sql = "INSERT INTO products (name, serial_number, description) 
@@ -148,9 +129,6 @@ class ProductRepository
         }
     }
 
-    /**
-     * Update a product
-     */
     public function update(Product $product): bool {
         try {
             $sql = "UPDATE products 
@@ -170,9 +148,6 @@ class ProductRepository
         }
     }
 
-    /**
-     * Delete a product
-     */
     public function delete(int $id): bool {
         try {
             $sql = "DELETE FROM products WHERE id = :id";
@@ -184,9 +159,6 @@ class ProductRepository
         }
     }
 
-    /**
-     * Get total number of products
-     */
     public function getTotalCount(): int {
         try {
             $sql = "SELECT COUNT(*) as total FROM products";
@@ -199,9 +171,6 @@ class ProductRepository
         }
     }
 
-    /**
-     * Check if product exists by serial number
-     */
     public function existsBySerialNumber(string $serialNumber): bool {
         try {
             $sql = "SELECT COUNT(*) as count FROM products WHERE serial_number = :serial_number";
@@ -215,10 +184,6 @@ class ProductRepository
         }
     }
 
-    /**
-     * Get products with low stock (based on batch quantities)
-     * This requires a join with stockbatches
-     */
     public function getProductsWithLowStock(int $threshold = 10): array {
         try {
             $sql = "SELECT p.*, SUM(sb.quantity) as total_quantity
@@ -244,9 +209,6 @@ class ProductRepository
         }
     }
 
-    /**
-     * Get products by category (if you add category column)
-     */
     public function findByCategory(string $category): array {
         try {
             // Note: Add category column to products table if needed
@@ -266,9 +228,6 @@ class ProductRepository
         }
     }
 
-    /**
-     * Get recent products (last 30 days)
-     */
     public function getRecentProducts(int $limit = 10): array {
         try {
             $sql = "SELECT * FROM products 
@@ -291,9 +250,6 @@ class ProductRepository
         }
     }
 
-    /**
-     * Hydrate database data into Product entity
-     */
     private function hydrate(array $data): Product {
         $product = new Product(
             $data['name'],
