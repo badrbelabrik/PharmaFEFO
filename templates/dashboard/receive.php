@@ -13,41 +13,7 @@ $userRole = $userRole ?? 'preparator';
 </head>
 <body class="h-full text-slate-900">
 <div class="flex min-h-screen">
-
-    <!-- Sidebar -->
-    <aside class="w-64 bg-slate-900 text-white flex flex-col p-4 shrink-0">
-        <div class="flex items-center space-x-2 px-2 py-3 mb-6 border-b border-slate-800">
-            <span class="text-emerald-500 text-2xl">⚕️</span>
-            <span class="text-lg font-bold">PharmaFEFO</span>
-        </div>
-        <nav class="space-y-1">
-            <a href="index.php?route=dashboard" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition-colors">
-                <span>📊</span> <span>Dashboard</span>
-            </a>
-            <a href="index.php?route=stock-receive" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-emerald-600 text-white font-medium">
-                <span>📥</span> <span>Stock Ingestion</span>
-            </a>
-            <a href="index.php?route=stock-dispatch" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition-colors">
-                <span>📤</span> <span>Dispense Medicine</span>
-            </a>
-            <?php if ($userRole === 'pharmacist' || $userRole === 'admin'): ?>
-                <a href="index.php?route=reports" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition-colors">
-                    <span>📉</span> <span>Financial Reports</span>
-                </a>
-            <?php endif; ?>
-        </nav>
-
-        <div class="border-t border-slate-800 pt-4 mt-auto px-2 flex items-center space-x-3">
-            <div class="w-9 h-9 rounded-full bg-emerald-500 flex items-center justify-center text-sm font-bold text-white">
-                <?= strtoupper(substr($currentUser, 0, 2)) ?>
-            </div>
-            <div>
-                <p class="text-sm font-semibold truncate max-w-[140px]"><?= htmlspecialchars($currentUser) ?></p>
-                <p class="text-xs text-slate-400"><?= ucfirst(htmlspecialchars($userRole)) ?></p>
-            </div>
-        </div>
-    </aside>
-
+    <?php require_once __DIR__ . '/../layout/sidebar.php'; ?>
     <!-- Form Content -->
     <main class="flex-grow p-8 max-w-3xl">
         <header class="mb-8">

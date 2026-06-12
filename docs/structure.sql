@@ -28,7 +28,7 @@ CREATE TABLE stockbatches(
     lot_number VARCHAR(100) NOT NULL,
     quantity INT NOT NULL,
     purchase_price FLOAT NOT NULL,
-    status ENUM('ok','warning','critical','expired','return_process') DEFAULT 'active',
+    status ENUM('ok','warning','critical','expired','return_process') DEFAULT 'ok',
     expiration_date DATE NOT NULL,
     created_at DATETIME NOT NULL,
     id_product INT NOT NULL,
