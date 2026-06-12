@@ -1,3 +1,9 @@
+<?php
+declare(strict_types=1);
+
+use PharmaFEFO\Service\StockBatchService;
+?>
+
 <!DOCTYPE html>
 <html lang="en" class="h-full bg-slate-100">
 <head>
@@ -54,9 +60,9 @@
                 <?php $unreadCount = $unreadNotificationsCount ?? 0; ?>
                 <?php if ($unreadCount > 0): ?>
                     <span class="absolute top-1 right-1 flex h-3 w-3">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                </span>
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    </span>
                 <?php endif; ?>
             </div>
         </header>
@@ -65,19 +71,19 @@
         <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
                 <p class="text-sm font-medium text-slate-500">Total Tracked Batches</p>
-                <p class="text-3xl font-bold text-slate-900 mt-2"><?= $totalBatches ?? 0 ?></p>
+                <p class="text-3xl font-bold text-slate-900 mt-2"><?= $stats['totalBatches'] ?? 0 ?></p>
             </div>
             <div class="bg-white p-5 rounded-xl border border-slate-200 border-l-4 border-emerald-500 shadow-xs">
                 <p class="text-sm font-medium text-slate-500">Conforming (> 6 months)</p>
-                <p class="text-3xl font-bold text-emerald-600 mt-2"><?= $healthyCount ?? 0 ?></p>
+                <p class="text-3xl font-bold text-emerald-600 mt-2"><?= $stats['healthyCount'] ?? 0 ?></p>
             </div>
             <div class="bg-white p-5 rounded-xl border border-slate-200 border-l-4 border-amber-500 shadow-xs">
                 <p class="text-sm font-medium text-slate-500">Warning (< 90 days)</p>
-                <p class="text-3xl font-bold text-amber-600 mt-2"><?= $warningCount ?? 0 ?></p>
+                <p class="text-3xl font-bold text-amber-600 mt-2"><?= $stats['warningCount'] ?? 0 ?></p>
             </div>
             <div class="bg-white p-5 rounded-xl border border-slate-200 border-l-4 border-red-500 shadow-xs">
                 <p class="text-sm font-medium text-slate-500">Critical (< 30 days)</p>
-                <p class="text-3xl font-bold text-red-600 mt-2"><?= $criticalCount ?? 0 ?></p>
+                <p class="text-3xl font-bold text-red-600 mt-2"><?= $stats['criticalCount'] ?? 0 ?></p>
             </div>
         </section>
 
@@ -125,33 +131,24 @@
                     <?php else: ?>
                         <?php foreach ($displayBatches as $batch): ?>
                             <?php
-                            $daysLeft = $batch->getDaysUntilExpiration();
-                            $rowClass = '';
-                            $riskClass = '';
-                            $riskText = '';
-                            $riskBgClass = '';
+                            // Use StockBatchService for all calculations
+                            $daysLeft = StockBatchService::getDaysUntilExpiration($batch);
+                            $badgeClass = StockBatchService::getBadgeClass($batch);
+                            $statusLabel = StockBatchService::getStatusLabel($batch);
+                            $isExpired = StockBatchService::isExpired($batch);
 
-                            if ($daysLeft <= 30) {
+                            // Determine row class based on days left
+                            if ($isExpired || $daysLeft < 0) {
+                                $rowClass = 'bg-gray-50/50 hover:bg-gray-50';
+                                $dateClass = 'text-gray-500 line-through';
+                            } elseif ($daysLeft <= 30) {
                                 $rowClass = 'bg-red-50/50 hover:bg-red-50';
-                                $riskClass = 'bg-red-100 text-red-800 border-red-200';
-                                $riskText = 'Critical (< 30 Days)';
-                            } elseif ($daysLeft <= 90) {
-                                $rowClass = 'bg-amber-50/30 hover:bg-amber-50';
-                                $riskClass = 'bg-amber-100 text-amber-800 border-amber-200';
-                                $riskText = 'Warning (< 90 Days)';
-                            } else {
-                                $rowClass = 'hover:bg-slate-50';
-                                $riskClass = 'bg-emerald-100 text-emerald-800 border-emerald-200';
-                                $riskText = 'Conforming';
-                            }
-
-                            $expDate = $batch->getExpirationDate();
-                            $dateClass = '';
-                            if ($daysLeft <= 30) {
                                 $dateClass = 'text-red-700 font-medium';
                             } elseif ($daysLeft <= 90) {
+                                $rowClass = 'bg-amber-50/30 hover:bg-amber-50';
                                 $dateClass = 'text-amber-700 font-medium';
                             } else {
+                                $rowClass = 'hover:bg-slate-50';
                                 $dateClass = 'text-slate-600';
                             }
                             ?>
@@ -160,23 +157,37 @@
                                     <?= htmlspecialchars($batch->getProduct()->getName()) ?>
                                 </td>
                                 <td class="px-6 py-4">
-                                        <span class="font-mono bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200 text-xs">
-                                            <?= htmlspecialchars($batch->getBatchNumber()) ?>
-                                        </span>
+                                    <span class="font-mono bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200 text-xs">
+                                        <?= htmlspecialchars($batch->getLotNumber()) ?>
+                                    </span>
                                 </td>
                                 <td class="px-6 py-4 font-medium text-slate-900">
                                     <?= $batch->getQuantity() ?> units
                                 </td>
                                 <td class="px-6 py-4 <?= $dateClass ?>">
-                                    <?= $expDate->format('F j, Y') ?>
+                                    <?= StockBatchService::formatExpirationDate($batch, 'F j, Y') ?>
+                                    <?php if ($isExpired || $daysLeft < 0): ?>
+                                        <span class="ml-2 text-xs text-red-600">(Expired)</span>
+                                    <?php elseif ($daysLeft <= 30): ?>
+                                        <span class="ml-2 text-xs text-red-600">(<?= $daysLeft ?> days left)</span>
+                                    <?php elseif ($daysLeft <= 90): ?>
+                                        <span class="ml-2 text-xs text-amber-600">(<?= $daysLeft ?> days left)</span>
+                                    <?php endif; ?>
                                 </td>
                                 <td class="px-6 py-4">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold <?= $riskClass ?> border">
-                                            <?= $riskText ?>
-                                        </span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold <?= $badgeClass ?> border">
+                                        <?= $statusLabel ?>
+                                    </span>
                                 </td>
                                 <td class="px-6 py-4 text-right whitespace-nowrap">
-                                    <?php if ($daysLeft <= 30): ?>
+                                    <?php if ($isExpired || $daysLeft < 0): ?>
+                                        <form action="index.php?route=stock-expired" method="POST" class="inline">
+                                            <input type="hidden" name="batch_id" value="<?= $batch->getId() ?>">
+                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gray-600 hover:bg-gray-700 rounded-lg transition-colors cursor-pointer">
+                                                Remove from Stock
+                                            </button>
+                                        </form>
+                                    <?php elseif ($daysLeft <= 30): ?>
                                         <form action="index.php?route=stock-expired" method="POST" class="inline">
                                             <input type="hidden" name="batch_id" value="<?= $batch->getId() ?>">
                                             <button type="submit" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors cursor-pointer">
@@ -192,7 +203,10 @@
                                             Dispense
                                         </a>
                                     <?php else: ?>
-                                        <span class="text-xs text-slate-400 italic">No actions needed</span>
+                                        <a href="index.php?route=stock-dispatch&product_id=<?= $batch->getProduct()->getId() ?>"
+                                           class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors cursor-pointer">
+                                            Dispense
+                                        </a>
                                     <?php endif; ?>
                                 </td>
                             </tr>

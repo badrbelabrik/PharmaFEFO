@@ -3,6 +3,7 @@
 namespace PharmaFEFO\Entity;
 
 use DateTime;
+use PharmaFEFO\Enum\BatchStatus;
 
 class StockBatch
 {
@@ -10,12 +11,12 @@ class StockBatch
     private string $lotNumber;
     private int $quantity;
     private float $purchasePrice;
-    private string $status;
-    private string $expirationDate;
+    private BatchStatus $status;
+    private DateTime $expirationDate;
     private string $createdAt;
     private Product $product;
 
-    public function __construct(string $lotNumber,int $quantity,float $purchasePrice,string $status,string $expirationDate,string $createdAt,Product $product,?int $id = null){
+    public function __construct(string $lotNumber,int $quantity,float $purchasePrice,BatchStatus $status,DateTime $expirationDate,string $createdAt,Product $product,?int $id = null){
         $this->lotNumber = $lotNumber;
         $this->quantity = $quantity;
         $this->purchasePrice = $purchasePrice;
@@ -66,22 +67,22 @@ class StockBatch
         $this->purchasePrice = $purchasePrice;
     }
 
-    public function getStatus(): string
+    public function getStatus(): BatchStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): void
+    public function setStatus(BatchStatus $status): void
     {
         $this->status = $status;
     }
 
-    public function getExpirationDate(): string
+    public function getExpirationDate(): DateTime
     {
         return $this->expirationDate;
     }
 
-    public function setExpirationDate(string $expirationDate): void
+    public function setExpirationDate(DateTime $expirationDate): void
     {
         $this->expirationDate = $expirationDate;
     }

@@ -4,6 +4,7 @@ namespace PharmaFEFO\Controller;
 
 use PharmaFEFO\Repository\StockBatchRepository;
 use PharmaFEFO\Repository\ProductRepository;
+use PharmaFEFO\Service\StockBatchService;
 
 class DashboardController
 {
@@ -16,45 +17,29 @@ class DashboardController
     }
 
     public function index(): void {
+        $currentFilter = $_GET['filter'] ?? 'all';
+
         $allBatches = $this->stockBatchRepo->findAllWithCriticality();
 
-        $criticalBatches = [];
-        $warningBatches = [];
-        $healthyBatches = [];
+        $stats = StockBatchService::getBatchStatistics($allBatches);
 
-        foreach ($allBatches as $batch) {
-            $daysLeft = $batch->getDaysUntilExpiration();
-
-            if ($daysLeft < 0) {
-                continue;
-            } elseif ($daysLeft <= 30) {
-                $criticalBatches[] = $batch;
-            } elseif ($daysLeft <= 90) {
-                $warningBatches[] = $batch;
-            } else {
-                $healthyBatches[] = $batch;
-            }
-        }
-
+        $displayBatches = match($currentFilter) {
+            'critical' => $stats['critical'],
+            'warning' => $stats['warning'],
+            'healthy' => $stats['healthy'],
+            default => $allBatches
+        };
 
         $totalProducts = count($this->productRepo->findAll());
 
+        $totalStockValue = StockBatchService::getTotalValueForBatches($allBatches);
 
-        $totalStockValue = $this->calculateTotalStockValue($allBatches);
-
-
-        $currentUser = $_SESSION['user_firstname'] . ' ' . $_SESSION['user_lastname'];
+        $currentUser = ($_SESSION['user_firstname'] ?? '') . ' ' . ($_SESSION['user_lastname'] ?? '');
         $userRole = $_SESSION['user_role'] ?? 'preparator';
 
+        $unreadNotifications = $this->stockBatchRepo->getUnreadNotifications();
+        $unreadNotificationsCount = count($unreadNotifications);
 
         require_once __DIR__ . '/../../templates/dashboard/dashboard.php';
-    }
-
-    private function calculateTotalStockValue(array $batches): float {
-        $total = 0;
-        foreach ($batches as $batch) {
-            $total += $batch->getTotalValue();
-        }
-        return $total;
     }
 }
